@@ -11,13 +11,11 @@ EXPOSE 4000
 # Add webpack for building Mirador
 RUN yarn add webpack
 
-# We run yarn install with an increased network timeout (5min) to avoid "ESOCKETTIMEDOUT" errors from hub.docker.com
-# See, for example https://github.com/yarnpkg/yarn/issues/5540
 # Build Mirador viewer
-RUN yarn run build:mirador --network-timeout 300000
+RUN yarn run build:mirador
 
 # Build DSpace UI for production
-RUN yarn run build:prod --network-timeout 300000
+RUN yarn run build:prod
 
 # Run the DSpace UI with Mirador viewer
 CMD yarn run serve:ssr
