@@ -1,0 +1,20 @@
+# This image will be built from the dspace-angular git repo
+# and will build an image with the Mirador viewer for use with IIIF
+# based on https://wiki.lyrasis.org/display/DSDOC7x/IIIF+Configuration#IIIFConfiguration-Enable/InstalltheMiradorVieweronFrontend
+# See https://github.com/DSpace/dspace-angular/tree/main/docker for usage details
+
+FROM node:14-alpine
+WORKDIR /app
+ADD . /app/
+EXPOSE 4000
+
+# We run yarn install with an increased network timeout (5min) to avoid "ESOCKETTIMEDOUT" errors from hub.docker.com
+# See, for example https://github.com/yarnpkg/yarn/issues/5540
+# Build Mirador viewer
+RUN yarn run build:mirador --network-timeout 300000
+
+# Build DSpace UI for production
+RUN yarn run build:prod --network-timeout 300000
+
+# Run the DSpace UI with Mirador viewer
+CMD yarn run serve:ssr
