@@ -9,7 +9,7 @@ ADD . /app/
 EXPOSE 4000
 
 # Add webpack for building Mirador
-RUN yarn add webpack
+RUN yarn add webpack --dev
 
 # Build Mirador viewer
 RUN yarn run build:mirador
