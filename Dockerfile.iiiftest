@@ -1,0 +1,24 @@
+# This image will be built from the dspace-angular git repo
+# and will build an image with the Mirador viewer for use with IIIF
+# based on https://wiki.lyrasis.org/display/DSDOC7x/IIIF+Configuration#IIIFConfiguration-Enable/InstalltheMiradorVieweronFrontend
+# See https://github.com/DSpace/dspace-angular/tree/main/docker for usage details
+
+FROM node:14-alpine
+WORKDIR /app
+ADD . /app/
+EXPOSE 4000
+
+# Add webpack for building Mirador
+RUN yarn add webpack@latest --dev
+
+# Build Mirador viewer
+RUN yarn run build:mirador
+
+# Build DSpace UI for production
+RUN yarn run build:prod
+
+# On startup, run in DEVELOPMENT mode (this defaults to live reloading enabled, etc).
+# Listen / accept connections from all IP addresses.
+# NOTE: At this time it is only possible to run Docker container in Production mode
+# if you have a public IP. See https://github.com/DSpace/dspace-angular/issues/1485
+CMD yarn serve --host 0.0.0.0
